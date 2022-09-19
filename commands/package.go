@@ -3,7 +3,7 @@ package commands
 import (
 	"strings"
 
-	"github.com/me123alsl/settings_os/utils"
+	"github.com/me123alsl/openmsa_installer/utils"
 )
 
 var RequrePackageList_client = []string{
@@ -14,6 +14,8 @@ var RequrePackageList_client = []string{
 
 var RequrePackageList_server = []string{
 	"openssh-server",
+	"sshpass",
+	"ansible",
 	"curl",
 	"wget",
 }
@@ -34,17 +36,18 @@ func GetPythonVersion() (float32, error) {
 	if err != nil {
 		return 0, err
 	}
-
 	return utils.StringToFloat32(strings.TrimSpace(out))
 }
 
 // 패키지 list 설치 yes로 모두 설치
 func InstallPackageList(packageList []string) error {
 	for _, pkg := range packageList {
+		Log.Println("install package : ", pkg)
 		err := ExecSudoCommand("sudo apt-get install -y " + pkg)
 		if err != nil {
-			return err
+			Log.Error(err)
 		}
+		Log.Println("install package finish : ", pkg)
 	}
 	return nil
 }
@@ -83,13 +86,15 @@ func InstallPython3IfNeed() error {
 		if err != nil {
 			Log.Info(err)
 		}
+
+		// /usr/bin/python3 링크 생성
+		err = LinkPython38()
+		if err != nil {
+			Log.Info(err)
+			return err
+		}
 	}
 
-	// /usr/bin/python3 링크 생성
-	err = LinkPython38()
-	if err != nil {
-		return err
-	}
-
+	Log.Println("Python3 install finish")
 	return nil
 }

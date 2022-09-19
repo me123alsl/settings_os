@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bufio"
 	"os"
 	"strconv"
 )
@@ -52,4 +53,34 @@ func StringToFloat32(s string) (float32, error) {
 func IsFileExist(path string) bool {
 	_, err := os.Stat(path)
 	return err == nil
+}
+
+// File text read and return string list (line by line)
+//
+// Parameters
+//
+//	path: file path
+//
+// Returns
+//
+//	[]string
+//	error
+func ReadFileText(path string) ([]string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lineText := scanner.Text()
+		if lineText == "" {
+			continue
+		}
+		lines = append(lines, scanner.Text())
+	}
+
+	return lines, scanner.Err()
 }

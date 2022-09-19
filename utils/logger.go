@@ -11,7 +11,7 @@ import (
 var Log = logrus.New()
 
 func init() {
-	Log.SetReportCaller(true)
+	// Log.SetReportCaller(true)
 
 	Log.SetFormatter(&logrus.TextFormatter{
 		DisableColors: false,

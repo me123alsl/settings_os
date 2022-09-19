@@ -1,4 +1,4 @@
-module github.com/me123alsl/settings_os
+module github.com/me123alsl/openmsa_installer
 
 go 1.19
 
